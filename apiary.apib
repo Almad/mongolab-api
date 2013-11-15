@@ -1,0 +1,140 @@
+FORMAT: 1A
+HOST: https://mongolab.com/api/v1
+
+# MongoLab v1 API
+
+This is **unofficial** [MongoLab](http://mongolab.com) API. Visit [support page](https://support.mongolab.com/entries/20433053-Is-there-a-REST-API-for-MongoDB-) for original documentation.
+
+I created this one for my own debugging purposes, but feel free to edit, fork & improve.  
+
+# Database
+Managing your databases. 
+
+## Database Command [/databases/{database}/runCommand]
+
+List of available commands:
+
+* getLastError
+* getPrevError
+* ping
+* profile
+* repairDatabase
+* resetError
+* whatsmyuri
+* convertToCapped
+* distinct
+* findAndModify
+* geoNear
+* reIndex
+* collStats
+* dbStats
+
+### Run Command [POST]
+
++ Request (application/json)
+
+        {
+            "distinct": "users",
+            "key": "account",
+            "query": {"active": true}
+        }
+
++ Response 200
+
+        []
+
+
+## Databases [/databases{?apiKey}]
+### List all databases [GET]
++ Response 200 (application/json)
+
+        ["testingdatabase"]
+
+## GET /clusters/{cluster_id}/databases{?apiKey}
++ Response 200
+
+        ["clustertest"]
+        
+## Collections [/database/{database}/collections{?apiKey}]
+### Get all collections in a database [GET]
++ Response 200
+
+        [ "testingcollection" , "system.indexes" , "system.users" ]
+    
+## Collection [/databases/{database}/collections/{collection}{?q,c,f,fo,s,sk,l,m,u}]
+
+Retrieve or manipuate a collection
+
+### Creating collection
+
+Just start using it — it's same as with standard driver. 
+
+
+### Retrieve all documents [GET]
++ Response 200
+
+        [ { "_id" : { "$oid" : "5270685146636b9525b22235"} , "testattribute": "testvalue" } ]
+
+
+    
+### Insert document [POST]
++ Request single document (application/json)
+
+        {"test": "att"}
+        
++ Request insert multiple documents (application/json)
+
+        [
+            {"test document": 1},
+            {"second test document": 2}
+        ]
+        
++ Response 200 (application/json)
+
+        { "test" : "att" , "_id" : { "$oid" : "52857264e4b0936dae3c7f14"}}
+        
+### Update or Delete multiple documents [PUT]
++ Request update multiple documents (application/json)
+
+        {
+            "$set": {"test document": 3}
+        }
+        
++ Request delete or replace multiple documents
+
+        [
+            {"x": 1}
+            {"x": 2}
+        ]
+        
++ Response 200
+
+        []
+
+## Document [/databases/{database}/collections/{collection}/{_id}]
+
+### Retrieve document [GET]
++ Response 200
+
+        []
+
+### Modify a document [PUT]
++ Request (application/json)
+
+        {"x": 2}
+        
++ Response 200
+
+        []
+
+### Delete a specified document [DELETE]
+
++ Response 200
+
+        { "_id" : { "$oid" : "52857261e4b0936dae3c7f0e"} , "test" : "att"}
+        
+        
++ Response 404
+
+        { "message" : "Document not found"}
+        
